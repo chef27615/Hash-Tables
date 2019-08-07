@@ -41,18 +41,22 @@ def hash_table_insert(hash_table, key, value):
     index = hash(key, hash_table.capacity)
     # bring current value in a variable
     current = hash_table.storage[index]
-    # create a new link_pair
-    
-    while current is not None and current.key != key:
-        current = current.next
-    if current is None:
-        new_pair = LinkedPair(key, value)
-        head = current
-        current = new_pair
-        new_pair.next = head
+    last_node = None
 
-        if new_pair.next is None:
-            hash_table.count += 1
+    while current is not None and current.key != key:
+        last_node = current
+        current = last_node.next
+    if current is not None:
+        current.value = value
+    else:
+        new_pair = LinkedPair(key, value)
+        new_pair.next = hash_table.storage[index]
+        hash_table.storage[index] = new_pair
+
+
+    
+
+    
     
 
 
@@ -61,15 +65,38 @@ def hash_table_insert(hash_table, key, value):
 
 # If you try to remove a value that isn't there, print a warning.
 # '''
-def hash_table_remove(hash_table, key, value):
+def hash_table_remove(hash_table, key):
     index = hash(key, hash_table.capacity)
-    linked_pair = LinkedPair(key, value)
-    if hash_table.storage[index].key != key:
-        print(f'Error, key {key} cannot be found')
-    if hash_table.storage[index].key is not None and len(hash_table.storage[index]) == 1:
-        if hash_table.storage[index].value == linked_pair.value:
-            hash_table.storage[index] = None
+    cur = hash_table.storage[index]
+    last_node = hash_table.storage[index]
+
+    if cur is not None:
+        while cur is not None:
+            if cur.key == key:
+                if cur is hash_table.storage[index]:
+                    if cur.next is not None:
+                        hash_table.storage[index] = None
+                        return None
+                    else:
+                        hash_table.storage[index] = hash_table.storage[index].next
+                        return None
+                else:
+                    if cur is not None:
+                        last_node = cur.next
+                        return None
+                    else:
+                        last_node.next = None
+                        return None
+            last_node = cur
+            cur = cur.next
+    if cur is None:
+        print(f'{key} not Found')
+        return None
+
+
+
         
+                
 
 
 
@@ -97,12 +124,14 @@ def hash_table_retrieve(hash_table, key):
 # '''
 def hash_table_resize(hash_table):
     new_hash_table = HashTable(hash_table.capacity * 2)
-    for i in range(hash_table.count):
+    for i in range(0, len(hash_table.storage)):
         current = hash_table.storage[i]
         while current is not None:
             hash_table_insert(new_hash_table, current.key, current.value)
             current = current.next
     return new_hash_table
+
+    
 
     
 
