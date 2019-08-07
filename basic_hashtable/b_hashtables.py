@@ -35,20 +35,31 @@ def hash(string, max):
 # If you are overwriting a value with a different key, print a warning.
 # '''
 def hash_table_insert(hash_table, key, value):
-    #getting the hash key
-    key_hash = hash(key, hash_table.capacity)
-    # create a new pair using the key and value passed in the fn
-    new_pair = Pair(key, value)
-    #getting index 
-    index = key_hash % hash_table.capacity
-    #if the index has pair, check if the keys match 
+
+    index = hash(key, hash_table.capacity)
+    pair = Pair(key, value)
     if hash_table.storage[index] is not None:
-        if key == hash_table.storage[index].key:
-            print(f'Error, {key} has an accident with {hash_table.storage[index].key}')
-        else:
-            hash_table.storage[index].value = value
-    else:
-        hash_table.storage[index] = new_pair
+        #bucket not empty
+        if hash_table.storage[index].key != key:
+            #check keys
+            print(f'Error, {key} is collied with {hash_table.storage[index].key}')
+    #add pair to hash_table
+    hash_table.storage[index] = pair
+
+    # #getting the hash key
+    # key_hash = hash(key, hash_table.capacity)
+    # # create a new pair using the key and value passed in the fn
+    # new_pair = Pair(key, value)
+    # #getting index 
+    # index = key_hash % hash_table.capacity
+    # #if the index has pair, check if the keys match 
+    # if hash_table.storage[index] is not None:
+    #     if key == hash_table.storage[index].key:
+    #         print(f'Error, {key} has an accident with {hash_table.storage[index].key}')
+    #     else:
+    #         hash_table.storage[index].value = value
+    # else:
+    #     hash_table.storage[index] = new_pair
 
 
 # '''
@@ -73,16 +84,28 @@ def hash_table_remove(hash_table, key):
 # Should return None if the key is not found.
 # '''
 def hash_table_retrieve(hash_table, key):
-    #get the hash key
-    key_hash = hash(key, hash_table.capacity)
-    #getting index
-    index = key_hash % hash_table.capacity
-    #if index is not none
-    if hash_table.storage[index] is not None:
-        #if the key is the same of what we trying to find
-        if hash_table.storage[index].key == key:
-            return hash_table.storage[index].value
-    return None
+    #key is found
+    #key is not found
+    index = hash(key, hash_table.capacity)
+    if hash_table.storage[index]is None:
+        return None
+    elif hash_table.storage[index] is not None and hash_table.storage[index].key != key:
+        return None
+    else:
+        return hash_table.storage[index].value
+    
+    
+    
+    # #get the hash key
+    # key_hash = hash(key, hash_table.capacity)
+    # #getting index
+    # index = key_hash % hash_table.capacity
+    # #if index is not none
+    # if hash_table.storage[index] is not None:
+    #     #if the key is the same of what we trying to find
+    #     if hash_table.storage[index].key == key:
+    #         return hash_table.storage[index].value
+    # return None
 
 
 def Testing():
